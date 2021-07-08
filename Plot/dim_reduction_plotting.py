@@ -25,7 +25,7 @@ def plot_data_3d(X_3d: pd.DataFrame, color: pd.Series, color_dict=None, labels_d
     return fig, ax
 
 
-def MDS_and_plot(dist: pd.DataFrame, title="MDS_clustring", folder="Plot", n_comp=3, labels=None):
+def MDS_and_plot(dist: pd.DataFrame, title="MDS_clustring", folder="plots", n_comp=3, labels=None):
     mds = MDS(n_components=n_comp, dissimilarity="precomputed")
     pos = mds.fit(dist).embedding_
     fig, ax = plot_data_3d(pd.DataFrame(pos), labels)
