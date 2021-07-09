@@ -38,4 +38,4 @@ def PCA_and_plot(df: pd.DataFrame, title="PCA_clustring", folder="Plot", n_comp=
     pos = pca.fit(df.T).components_
     fig, ax = plot_data_3d(pd.DataFrame(pos).T, labels)
     ax.set_title(title)
-    plt.savefig(f"{title}.png")
+    plt.savefig(f"{folder}/{title}.png")
