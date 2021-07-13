@@ -162,5 +162,5 @@ if __name__ == "__main__":
     df = data_to_df("mushrooms_data.txt")
     df = odor_to_tag(df)
     train, test, train_tag, test_tag = split_data_and_tags(df)
-    paramdict = {"hidden_size_01": 256, "hidden_size_02": 64, "lr": 0.01, "batch_size": 32, "n_epoch": 10}
+    paramdict = {"hidden_size_01": 256, "hidden_size_02": 64, "lr": 0.0001, "batch_size": 32, "n_epoch": 30}
     neural_network(train, train_tag, test, train_tag, 0.8, paramdict)
