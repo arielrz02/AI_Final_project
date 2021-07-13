@@ -15,17 +15,6 @@ from sklearn.model_selection import train_test_split
 from Preprocess.Preprocces_whole_data import *
 from Preprocess.split_data import split_data_and_tags
 
-class Dataset:
-    def __init__(self, data, label):
-        self.data = data
-        self.label = label
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, i):
-        return self.data[i], self.label[i]
-
 
 class NetworkClassifier(nn.Module):
     def __init__(self, _rec_size, first, second):

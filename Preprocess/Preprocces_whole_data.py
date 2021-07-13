@@ -1,6 +1,8 @@
 import pandas as pd
 from typing import Union
 
+from Plot.plot_odor_types import plot_odor_types
+
 DATA_PATH = "raw_data/"
 
 def data_to_df(filename="mushrooms_data.txt") -> pd.DataFrame:
@@ -31,4 +33,5 @@ def odor_to_tag(df: pd.DataFrame) -> pd.DataFrame:
 
 if __name__ == "__main__":
     df = data_to_df("mushrooms_data.txt")
-    one_hot_enc(df)
+    df = odor_to_tag(df)
+    plot_odor_types(df["odor"])

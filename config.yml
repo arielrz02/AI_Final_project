@@ -1,0 +1,23 @@
+authorName: ariel
+experimentName: AI_Proj multiclass NN
+trialConcurrency: 2
+maxExecDuration: 120h
+maxTrialNum: 10000
+#choice: local, remote, pai
+trainingServicePlatform: local
+searchSpacePath: params.json
+#choice: true, false
+useAnnotation: false
+tuner:
+  #choice: TPE, Random, Anneal, Evolution, BatchTuner, MetisTuner, GPTuner
+  #SMAC (SMAC should be installed through nnictl)
+  builtinTunerName: TPE
+  classArgs:
+    #choice: maximize, minimize
+    optimize_mode: maximize
+localConfig:
+  useActiveGpu: false
+trial:
+  command: python3 multiclass_NN.py
+  codeDir: .
+  gpuNum: 1
