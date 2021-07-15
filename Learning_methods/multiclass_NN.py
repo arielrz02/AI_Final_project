@@ -11,13 +11,13 @@ import torch.nn.functional as F
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 
-from Preprocess.Preprocces_whole_data import *
+from Preprocess.preprocess_funcs import *
 from Preprocess.split_data import split_data_and_tags
 
 from Learning_methods.NN_funcs_and_classes import loading_data, calculate_weighted_in_train, Model_multiClass
 
 
-def train_nn(model, train_loader, y_train, optimizer, device, weighted_lst):
+def train_nn(model, train_loader, optimizer, device, weighted_lst):
     loss_train_total = 0
     y_pred_train_lst = []  # for calculate f1
     y_batch_total = []
@@ -76,8 +76,8 @@ def validation(model, validation_loader, y_validation, device, weighted_lst):
     return loss_val_total, f1_micro, f1_macro, model
 
 
-def neural_net(train_data, train_tag, val_data, val_tag, epoch, batch_size, learning_rate, weight_decay_optimizer,
-               dropout, activation_function, hidden_layer1_size, hidden_layer2_size, char_num=94, classes=9, is_nni=False):
+def neural_net(train_data, train_tag, val_data, val_tag, epochs, batch_size, lr, WDO,
+               dropout, activation_function, hidden_size_01, hidden_size_02, char_num=94, classes=9, is_nni=False):
 
     weighted_lst = calculate_weighted_in_train(train_tag, options=classes)
     train_loader, validation_loader = loading_data(train_data, train_tag, val_data, val_tag, batch_size)
@@ -85,9 +85,9 @@ def neural_net(train_data, train_tag, val_data, val_tag, epoch, batch_size, lear
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("device: " + str(device))
 
-    model = Model_multiClass(char_num, hidden_layer1_size, hidden_layer2_size,
+    model = Model_multiClass(char_num, hidden_size_01, hidden_size_02,
                              classes, activation_function, dropout).to(device)
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay_optimizer)
+    optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=WDO)
 
     best_f1mic = 0
     tr_f1mic_in_best_f1mic_test = 0
@@ -95,7 +95,7 @@ def neural_net(train_data, train_tag, val_data, val_tag, epoch, batch_size, lear
     f1mac_ts_in_best_f1mic_test = 0  # add to return
     best_model = None
 
-    for e in range(1, epoch + 1):
+    for e in range(1, epochs + 1):
         loss_train_total, f1_micro_train, f1_macro_train = train_nn(model, train_loader, train_tag, optimizer, device, weighted_lst)
         loss_val_total, f1_micro_val, f1_macro_val, temp_model = validation(model, validation_loader, val_tag, device, weighted_lst)
 
@@ -150,24 +150,14 @@ def running_cross_validation(train, test, train_tag, test_tag, params: list, cv_
 
 def running_nni(train, test, train_tag, test_tag):
     params = nni.get_next_parameter()
-    epoch = params["epochs"]
-    batch_size = params["batch_size"]
-    learning_rate = params["lr"]
-    dropout = params["dropout"]
-    hidden_layer1_size = params["hidden_size_01"]
-    hidden_layer2_size = params["hidden_size_02"]
     if params["activation_function"] == "relu":
-        activation_function = nn.ReLU()
+        params["activation_function"] = nn.ReLU()
     elif params["activation_function"] == "tanh":
-        activation_function = nn.Tanh()
+        params["activation_function"] = nn.Tanh()
     elif params["activation_function"] == "elu":
-        activation_function = nn.ELU()
-    weight_decay_optimizer = params["WDO"]
+        params["activation_function"] = nn.ELU()
 
-
-    neural_net(train, train_tag, test, test_tag, epoch, batch_size,
-               learning_rate, weight_decay_optimizer, dropout, activation_function,
-               hidden_layer1_size, hidden_layer2_size, is_nni=True)
+    neural_net(train, train_tag, test, test_tag, **params, is_nni=True)
 
 
 if __name__ == '__main__':

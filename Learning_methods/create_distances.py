@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from itertools import combinations
 from tqdm import tqdm
-from Preprocess.Preprocces_whole_data import data_to_df
+from Preprocess.preprocess_funcs import data_to_df
 from Plot.dim_reduction_plotting import MDS_and_plot
 
 def create_dist_mat(df: pd.DataFrame) -> pd.DataFrame:

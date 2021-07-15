@@ -12,7 +12,7 @@ from itertools import product
 from sklearn.metrics import f1_score, confusion_matrix
 from sklearn.model_selection import train_test_split
 
-from Preprocess.Preprocces_whole_data import *
+from Preprocess.preprocess_funcs import *
 from Preprocess.split_data import split_data_and_tags
 
 

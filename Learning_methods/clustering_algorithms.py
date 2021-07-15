@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.cluster import KMeans, DBSCAN, SpectralClustering
 from sklearn.mixture import GaussianMixture
 
-from Preprocess.Preprocces_whole_data import data_to_df, one_hot_enc
+from Preprocess.preprocess_funcs import data_to_df, one_hot_enc
 from create_distances import create_dist_mat
 from Plot.dim_reduction_plotting import MDS_and_plot, PCA_and_plot
 

@@ -1,7 +1,7 @@
 import pandas as pd
 import numbers as np
 from sklearn.model_selection import train_test_split
-from Preprocess.Preprocces_whole_data import one_hot_enc
+from Preprocess.preprocess_funcs import one_hot_enc
 
 def split_data_and_tags(data: pd.DataFrame, train_ratio: int=0.8, tag: str="odor"):
     tags = data[tag]
