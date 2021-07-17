@@ -11,7 +11,7 @@ import torch.nn.functional as F
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 
-from Preprocess.preprocess_funcs import *
+from Preprocess.preprocess_full import prep_missing_data, prep_whole_data
 from Preprocess.split_data import split_data_and_tags
 
 from Learning_methods.NN_funcs_and_classes import loading_data, calculate_weighted_in_train, Model_multiClass
@@ -96,7 +96,7 @@ def neural_net(train_data, train_tag, val_data, val_tag, epochs, batch_size, lr,
     best_model = None
 
     for e in range(1, epochs + 1):
-        loss_train_total, f1_micro_train, f1_macro_train = train_nn(model, train_loader, train_tag, optimizer, device, weighted_lst)
+        loss_train_total, f1_micro_train, f1_macro_train = train_nn(model, train_loader, optimizer, device, weighted_lst)
         loss_val_total, f1_micro_val, f1_macro_val, temp_model = validation(model, validation_loader, val_tag, device, weighted_lst)
 
         print(f'Epoch {e + 0:03}: | Loss Train: {loss_train_total / len(train_loader):.7f} | '
@@ -121,7 +121,7 @@ def neural_net(train_data, train_tag, val_data, val_tag, epochs, batch_size, lr,
         return best_f1mic, tr_f1mic_in_best_f1mic_test, f1mac_ts_in_best_f1mic_test, f1mac_tr_in_best_f1mic_test, best_model
 
 
-def running_cross_validation(train, test, train_tag, test_tag, params: list, cv_num=5,):
+def running_cross_validation(train, test, train_tag, test_tag, params: list, cv_num=5, charsize=94):
     """
     check stability of parameters by cross-validation
     """
@@ -135,7 +135,7 @@ def running_cross_validation(train, test, train_tag, test_tag, params: list, cv_
     for i in range(cv_num):
         f1mic_test, f1mic_tr, f1mac_ts, f1mac_tr, best_model = neural_net(train, train_tag, test, test_tag,
                                                                           epoch, batch_size, learning_rate, weight_decay_optimizer, dropout, activation_function,
-                                                                          hidden_layer1_size, hidden_layer2_size, is_nni=False)
+                                                                          hidden_layer1_size, hidden_layer2_size, char_num=charsize, is_nni=False)
         single_f1mic_ts_total += f1mic_test
         single_f1mic_tr_total += f1mic_tr
         single_f1mac_ts_total += f1mac_ts
@@ -148,7 +148,7 @@ def running_cross_validation(train, test, train_tag, test_tag, params: list, cv_
 
 
 
-def running_nni(train, test, train_tag, test_tag):
+def running_nni(train, test, train_tag, test_tag, charsize=94):
     params = nni.get_next_parameter()
     if params["activation_function"] == "relu":
         params["activation_function"] = nn.ReLU()
@@ -157,18 +157,19 @@ def running_nni(train, test, train_tag, test_tag):
     elif params["activation_function"] == "elu":
         params["activation_function"] = nn.ELU()
 
-    neural_net(train, train_tag, test, test_tag, **params, is_nni=True)
+    neural_net(train, train_tag, test, test_tag, **params, char_num=charsize, is_nni=True)
 
 
 if __name__ == '__main__':
-    df = data_to_df("mushrooms_data.txt")
-    df = odor_to_tag(df)
-    train, test, train_tag, test_tag = split_data_and_tags(df)
+    # df = data_to_df("mushrooms_data.txt")
+    # df = odor_to_tag(df)
+    train, test, train_tag, test_tag = prep_whole_data()
     train, test, train_tag, test_tag = train.to_numpy(), test.to_numpy(), train_tag.to_numpy(), test_tag.to_numpy()
-    realtrain, val, realtrain_tag, val_tag = train_test_split(train, train_tag, train_size=0.8)
-    running_nni(realtrain, val, realtrain_tag, val_tag)
-    #running_cross_validation(train, test, train_tag, test_tag)
-
+    #realtrain, val, realtrain_tag, val_tag = train_test_split(train, train_tag, train_size=0.8)
+    #running_nni(realtrain, val, realtrain_tag, val_tag)
+    #running_cross_validation(train, test, train_tag, test_tag, [40, 128, 0.01, 0.1, 256, 64, nn.ELU(), 0.00001])
+    running_cross_validation(train, test, train_tag, test_tag, [20, 64, 0.01, 0.3, 256, 32, nn.ELU(), 1e-7],
+                             charsize=train.shape[1])
 
 
 

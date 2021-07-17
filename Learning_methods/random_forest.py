@@ -9,7 +9,7 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import confusion_matrix, f1_score
 from sklearn.model_selection import train_test_split
 
-from Preprocess.preprocess_funcs import odor_to_tag, data_to_df
+from Preprocess.preprocess_full import prep_missing_data, prep_whole_data
 from Preprocess.split_data import split_data_and_tags
 
 
@@ -52,8 +52,8 @@ def choose_rf_params(df: pd.DataFrame, tags: pd.Series):
     min_split_lst = [2, 5, 10]
     min_leaf_lst = [1, 2, 4]
 
-    maxmacf1 = np.array(0)
-    maxmicf1 = np.array(0)
+    maxmacf1 = 0
+    maxmicf1 = 0
 
     for n_est, max_feat, max_depth, min_splt, min_leaf in tqdm(product(n_estimators_lst,
         max_features_lst, max_depth_lst, min_split_lst, min_leaf_lst), total=1260):
@@ -68,7 +68,7 @@ def choose_rf_params(df: pd.DataFrame, tags: pd.Series):
             micf1std = std_mic_f1
             f1_mic_params = paramsgrid
 
-        if mean_mac_f1 > maxmicf1:
+        if mean_mac_f1 > maxmacf1:
             maxmacf1 = mean_mac_f1
             macf1std = std_mac_f1
             f1_mac_params = paramsgrid
@@ -78,13 +78,13 @@ def choose_rf_params(df: pd.DataFrame, tags: pd.Series):
 
 
 if __name__ == "__main__":
-    df = data_to_df("mushrooms_data.txt")
-    df = odor_to_tag(df)
-    train, test, train_tag, test_tag = split_data_and_tags(df)
-    #res = rf_single_hyperparams(train, test, train_tag, test_tag, {'n_estimators': 1300, 'max_features': 'sqrt', 'max_depth': 100, 'min_samples_split': 10, 'min_samples_leaf': 4})
-    #print(res)
-    params = choose_rf_params(train, train_tag)
-    print(f"max of f1 micro with params {params[2]}")
-    print(f"max of f1 macro with params {params[5]}")
-    print(rf_single_hyperparams(train, test, train_tag, test_tag, params[2]))
-    print(rf_single_hyperparams(train, test, train_tag, test_tag, params[5]))
+    train, test, train_tags, test_tags = prep_missing_data()
+    res = rf_single_hyperparams(train, test, train_tags, test_tags, {'n_estimators': 500, 'max_features': 'sqrt',
+                                                                   'max_depth': 20, 'min_samples_split': 2,
+                                                                   'min_samples_leaf': 4})
+    print(res)
+    # params = choose_rf_params(train, train_tag)
+    # print(f"max of f1 micro with params {params[2]}")
+    # print(f"max of f1 macro with params {params[5]}")
+    # print(rf_single_hyperparams(train, test, train_tag, test_tag, params[2]))
+    # print(rf_single_hyperparams(train, test, train_tag, test_tag, params[5]))

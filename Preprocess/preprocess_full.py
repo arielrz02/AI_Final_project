@@ -15,4 +15,5 @@ def prep_missing_data(file:str="mushrooms_data_missing.txt"):
     df = odor_to_tag(df)
     df.dropna(inplace=True)
     df.replace("-", np.nan, inplace=True)
-    train, test, train_tag, test_tag = split_data_and_tags(df)
+    train_test_tags = split_data_and_tags(df)
+    return train_test_tags
