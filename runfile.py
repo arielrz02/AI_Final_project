@@ -50,7 +50,7 @@ def main(args):
             print(res)
         elif model == "neural_network":
             res = neural_net(train, test, train_tags, test_tags, charsize=train.shape[1])
-            print(res) #TODO: make priting in the runfile nicer
+            print(res) #TODO: make printing in the runfile nicer
         else:
             print(f"The model {data} doesn't exist")
             return
