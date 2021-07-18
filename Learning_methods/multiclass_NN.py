@@ -76,8 +76,9 @@ def validation(model, validation_loader, y_validation, device, weighted_lst):
     return loss_val_total, f1_micro, f1_macro, model
 
 
-def neural_net(train_data, train_tag, val_data, val_tag, epochs, batch_size, lr, WDO,
-               dropout, activation_function, hidden_size_01, hidden_size_02, char_num=94, classes=9, is_nni=False):
+def neural_net(train_data, val_data, train_tag, val_tag, epochs=20, batch_size=64, lr=0.01, WDO=1e-7,
+               dropout=0.3, activation_function=nn.ELU(), hidden_size_01=256, hidden_size_02=32,
+               charsize=94, classes=9, is_nni=False):
 
     weighted_lst = calculate_weighted_in_train(train_tag, options=classes)
     train_loader, validation_loader = loading_data(train_data, train_tag, val_data, val_tag, batch_size)
@@ -85,7 +86,7 @@ def neural_net(train_data, train_tag, val_data, val_tag, epochs, batch_size, lr,
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("device: " + str(device))
 
-    model = Model_multiClass(char_num, hidden_size_01, hidden_size_02,
+    model = Model_multiClass(charsize, hidden_size_01, hidden_size_02,
                              classes, activation_function, dropout).to(device)
     optimizer = optim.Adam(model.parameters(), lr=lr, weight_decay=WDO)
 
@@ -118,7 +119,7 @@ def neural_net(train_data, train_tag, val_data, val_tag, epochs, batch_size, lr,
         nni.report_final_result(best_f1mic)  # report in the end of trail running
         return None, None, None
     else:
-        return best_f1mic, tr_f1mic_in_best_f1mic_test, f1mac_ts_in_best_f1mic_test, f1mac_tr_in_best_f1mic_test, best_model
+        return best_f1mic, tr_f1mic_in_best_f1mic_test, f1mac_ts_in_best_f1mic_test, f1mac_tr_in_best_f1mic_test
 
 
 def running_cross_validation(train, test, train_tag, test_tag, params: list, cv_num=5, charsize=94):
@@ -133,9 +134,9 @@ def running_cross_validation(train, test, train_tag, test_tag, params: list, cv_
 
     single_f1mic_ts_total, single_f1mic_tr_total, single_f1mac_ts_total, single_f1mac_tr_total = 0, 0, 0, 0
     for i in range(cv_num):
-        f1mic_test, f1mic_tr, f1mac_ts, f1mac_tr, best_model = neural_net(train, train_tag, test, test_tag,
+        f1mic_test, f1mic_tr, f1mac_ts, f1mac_tr = neural_net(train, test, train_tag, test_tag,
                                                                           epoch, batch_size, learning_rate, weight_decay_optimizer, dropout, activation_function,
-                                                                          hidden_layer1_size, hidden_layer2_size, char_num=charsize, is_nni=False)
+                                                                          hidden_layer1_size, hidden_layer2_size, charsize=charsize, is_nni=False)
         single_f1mic_ts_total += f1mic_test
         single_f1mic_tr_total += f1mic_tr
         single_f1mac_ts_total += f1mac_ts
@@ -157,7 +158,7 @@ def running_nni(train, test, train_tag, test_tag, charsize=94):
     elif params["activation_function"] == "elu":
         params["activation_function"] = nn.ELU()
 
-    neural_net(train, train_tag, test, test_tag, **params, char_num=charsize, is_nni=True)
+    neural_net(train, test, train_tag, test_tag, **params, charsize=charsize, is_nni=True)
 
 
 if __name__ == '__main__':

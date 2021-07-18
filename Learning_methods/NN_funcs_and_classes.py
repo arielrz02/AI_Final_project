@@ -42,8 +42,8 @@ class Model_multiClass(nn.Module):
 
 # load data to pytorch tensors
 def loading_data(train_data, train_tag, val_data, val_tag, batch_size):
-    train_data = Dataset(torch.FloatTensor(train_data), torch.FloatTensor(train_tag))
-    validation_data = Dataset(torch.FloatTensor(val_data), torch.FloatTensor(val_tag))
+    train_data = Dataset(torch.FloatTensor(train_data.values), torch.FloatTensor(train_tag.values))
+    validation_data = Dataset(torch.FloatTensor(val_data.values), torch.FloatTensor(val_tag.values))
 
     train_loader = DataLoader(dataset=train_data, batch_size=batch_size, shuffle=True)
     validation_loader = DataLoader(dataset=validation_data, batch_size=batch_size, shuffle=False)

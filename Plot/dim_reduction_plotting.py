@@ -33,7 +33,7 @@ def MDS_and_plot(dist: pd.DataFrame, title="MDS_clustring", folder="plots", n_co
     plt.savefig(f"{title}.png")
 
 
-def PCA_and_plot(df: pd.DataFrame, title="PCA_clustring", folder="Plot", n_comp=3, labels=None):
+def PCA_and_plot(df: pd.DataFrame, title="PCA_clustring", folder="plots", n_comp=3, labels=None):
     pca = PCA(n_components=n_comp)
     pos = pca.fit(df.T).components_
     fig, ax = plot_data_3d(pd.DataFrame(pos).T, labels)

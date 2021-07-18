@@ -47,7 +47,7 @@ def evaluate(prediction, tag) -> Tuple[np.ndarray, np.ndarray]:
 
 def choose_rf_params(df: pd.DataFrame, tags: pd.Series):
     n_estimators_lst = [int(x) for x in np.linspace(start=100, stop=1300, num=7)]
-    max_features_lst = ['auto', 'sqrt']
+    max_features_lst = ['log2', 'sqrt']
     max_depth_lst = [int(x) for x in np.linspace(10, 100, num=10)]
     min_split_lst = [2, 5, 10]
     min_leaf_lst = [1, 2, 4]

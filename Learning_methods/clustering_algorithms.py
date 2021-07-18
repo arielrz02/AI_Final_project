@@ -1,29 +1,27 @@
 import pandas as pd
-import numpy as np
 from sklearn.cluster import KMeans, DBSCAN, SpectralClustering
 from sklearn.mixture import GaussianMixture
 
 from Preprocess.preprocess_funcs import data_to_df, one_hot_enc
-from create_distances import create_dist_mat
-from Plot.dim_reduction_plotting import MDS_and_plot, PCA_and_plot
+from Plot.dim_reduction_plotting import PCA_and_plot
 
 
-def using_spectral_cluster(X: pd.DataFrame, n_clusters=9, **kwargs) -> list:
+def using_spectral_cluster(X: pd.DataFrame, n_clusters=15, **kwargs) -> list:
     clustering = SpectralClustering(n_clusters=n_clusters, **kwargs).fit(X)
     return clustering.labels_
 
 
-def using_Kmeans(X: pd.DataFrame, n_clusters=9, **kwargs) -> list:
+def using_Kmeans(X: pd.DataFrame, n_clusters=15, **kwargs) -> list:
     clustering = KMeans(n_clusters=n_clusters, **kwargs).fit(X)
     return clustering.labels_
 
 
-def using_dbscan(X: pd.DataFrame, eps, **kwargs) -> list:
+def using_dbscan(X: pd.DataFrame, eps=1.5) -> list:
     clustering = DBSCAN(eps=eps).fit(X)
     return clustering.labels_
 
-def using_GMM(X: pd.DataFrame, n_clusters=9, **kwargs) -> list:
-    clustering = GaussianMixture(n_components=n_clusters, **kwargs).fit(X)
+def using_GMM(X: pd.DataFrame, n_clusters=12, tol=0.001, **kwargs) -> list:
+    clustering = GaussianMixture(n_components=n_clusters, tol=tol, **kwargs).fit(X)
     return clustering.predict(X)
 
 
