@@ -26,9 +26,15 @@ def main(args):
     if findParams == "true":
         if model == "random_forest":
             res = choose_rf_params(train, train_tags)
-            print(res)
+            print(f"the grid search gave the following results:\n"
+                  f"the highest f1 micro score we got is {res[0]}, with a standard deviation of {res[1]}.\n"
+                  f"it was reached with the following parameters: {res[2]}\n"
+                  f"the grid search gave the following results:\n"
+                  f"the highest f1 micro score we got is {res[3]}, with a standard deviation of {res[4]}.\n"
+                  f"it was reached with the following parameters: {res[5]}\n")
         elif model == "neural_network":
             running_nni(train, test, train_tags, test_tags)
+            print("Please make sure you are running this through the NNI interface")
         else:
             print(f"The model {model} doesn't have parameter a maximization function")
             return
@@ -52,10 +58,11 @@ def main(args):
                                         {'n_estimators': 500, 'max_features': 'sqrt',
                                          'max_depth': 20, 'min_samples_split': 2,
                                          'min_samples_leaf': 4})
-            print(res)
+            print(f"the f1 micro score is {res[0]} and the f1 macro score is {res[1]}")
         elif model == "neural_network":
             res = neural_net(train, test, train_tags, test_tags, charsize=train.shape[1])
-            print(res) #TODO: make printing in the runfile nicer
+            print(f"the f1 micro score is {res[0]} for the test and {res[1]} for the training data\n"
+                  f"the f1 macro score is {res[2]} for the test and {res[3]} for the training data\n")
         else:
             print(f"The model {model} doesn't exist")
             return

@@ -24,5 +24,5 @@ def plot_model_pref(folder="plots", name="Model preformance", bf=False):
     plt.savefig(f"{folder}/{name}.png")
 
 if __name__ == "__main__":
-    plot_model_pref(bf= True, name="Better features model preformance")
+    plot_model_pref(bf=True, name="Better features model preformance")
     plot_model_pref()

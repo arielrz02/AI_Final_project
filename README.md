@@ -4,6 +4,8 @@ in the course Artificial Intelligence.<br><br>
 The code should be run through runfile.py,
 using command line arguments. The arguments may specify what data it should run on
 (either the full or missing data), which model to run,
+whether to use "better features" (which means fewer features due to
+anomaly detection and PCA)
 and whether to run the parameter maximizing functions
 (only available for random forest and neural network).<br><br>
 The model argument should be lower case and spaces should be swapped with underscores

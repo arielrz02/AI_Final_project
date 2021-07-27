@@ -110,7 +110,6 @@ def neural_net(train_data, val_data, train_tag, val_tag, epochs=20, batch_size=6
             tr_f1mic_in_best_f1mic_test = f1_micro_train
             f1mac_tr_in_best_f1mic_test = f1_macro_train
             f1mac_ts_in_best_f1mic_test = f1_macro_val
-            best_model = copy.deepcopy(temp_model)
 
         if is_nni:
             nni.report_intermediate_result(best_f1mic)  # report after each epoch
@@ -141,8 +140,6 @@ def running_cross_validation(train, test, train_tag, test_tag, params: list, cv_
         single_f1mic_tr_total += f1mic_tr
         single_f1mac_ts_total += f1mac_ts
         single_f1mac_tr_total += f1mac_tr
-
-        # torch.save(best_model.state_dict(), f'../models_best_params/multi/model_params_{ind_param}_cv_num_{i}.pth')
 
     print(f'avg train f1mic: {single_f1mic_tr_total / cv_num}, avg val f1mic: {single_f1mic_ts_total / cv_num}'
           f' avg train f1mac: {single_f1mac_tr_total / cv_num}, avg val f1mac: {single_f1mac_ts_total / cv_num}')
