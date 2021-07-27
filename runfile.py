@@ -53,7 +53,7 @@ def main(args):
             else:
                 tags = train_tags.append(test_tags)
             score = sil_score(data, tags)
-            PCA_and_plot(data, labels=tags, title=model)
+            PCA_and_plot(data, labels=tags, title=model+' visualization')
             print(f"The silhouette score is {score}, a visualization was saved in the plots folder.")
         elif model == "random_forest":
             res = rf_single_hyperparams(train, test, train_tags, test_tags,
@@ -90,8 +90,4 @@ if __name__ == "__main__":
     parser.add_argument('--findParams', '-f', type=str, default='false')
     parser.add_argument('--better_features', '-b', type=str, default='false')
     args = parser.parse_args()
-    main(args)
-    main(args)
-    main(args)
-    main(args)
     main(args)
