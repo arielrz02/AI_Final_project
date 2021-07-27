@@ -23,6 +23,18 @@ def plot_model_pref(folder="plots", name="Model preformance", bf=False):
     ax.set_title(name)
     plt.savefig(f"{folder}/{name}.png")
 
+def plot_clustering_pref(folder="plots", name="Cluster preformance"):
+    df = pd.DataFrame([[0.266, "Spectral clustering"], [0.264, "DBSCAN"],
+                        [0.17, "GMM"], [0.162, "KMeans"],],
+                      columns=["Silhouette score", "Clustering model"])
+    fig, ax = plt.subplots()
+    ax = sns.barplot(data=df, y="Silhouette score", x="Clustering model", color="teal")
+    ax.set_xlabel(color='r', xlabel="Clustering Model")
+    ax.set_ylabel(color='r', ylabel="Silhouette score")
+    ax.set_title(name)
+    plt.savefig(f"{folder}/{name}.png")
+
 if __name__ == "__main__":
-    plot_model_pref(bf=True, name="Better features model preformance")
-    plot_model_pref()
+    plot_clustering_pref()
+    # plot_model_pref(bf=True, name="Better features model preformance")
+    # plot_model_pref()

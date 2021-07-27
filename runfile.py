@@ -52,7 +52,9 @@ def main(args):
                 tags = using_dbscan(data)
             else:
                 tags = train_tags.append(test_tags)
+            score = sil_score(data, tags)
             PCA_and_plot(data, labels=tags, title=model)
+            print(f"The silhouette score is {score}, a visualization was saved in the plots folder.")
         elif model == "random_forest":
             res = rf_single_hyperparams(train, test, train_tags, test_tags,
                                         {'n_estimators': 500, 'max_features': 'sqrt',
