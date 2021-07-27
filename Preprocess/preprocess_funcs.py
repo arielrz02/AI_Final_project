@@ -29,7 +29,3 @@ def odor_to_tag(df: pd.DataFrame) -> pd.DataFrame:
     odor_dict = {'a': 0, 'l': 1, 'c': 2, 'y': 3, 'f': 4, 'm': 5, 'n': 6, 'p': 7, 's': 8, '-': np.nan}
     df["odor"] = [odor_dict[x] for x in df["odor"]]
     return df
-
-if __name__ == "__main__":
-    df = data_to_df("mushrooms_data.txt")
-    one_hot_enc(df)

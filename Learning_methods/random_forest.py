@@ -9,8 +9,6 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.metrics import confusion_matrix, f1_score
 from sklearn.model_selection import train_test_split
 
-from Preprocess.preprocess_full import prep_missing_data, prep_whole_data
-from Preprocess.split_data import split_data_and_tags
 
 
 def rf_cross_val(train_data: pd.DataFrame, tags: pd.Series, rfparams: dict, fold=5):
@@ -78,11 +76,7 @@ def choose_rf_params(df: pd.DataFrame, tags: pd.Series):
 
 
 if __name__ == "__main__":
-    train, test, train_tags, test_tags = prep_missing_data()
-    res = rf_single_hyperparams(train, test, train_tags, test_tags, {'n_estimators': 500, 'max_features': 'sqrt',
-                                                                   'max_depth': 20, 'min_samples_split': 2,
-                                                                   'min_samples_leaf': 4})
-    print(res)
+    a=1
     # params = choose_rf_params(train, train_tag)
     # print(f"max of f1 micro with params {params[2]}")
     # print(f"max of f1 macro with params {params[5]}")
