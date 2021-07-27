@@ -14,7 +14,7 @@ There is also an option to enter "odor_based" as the model to get a plot
 of the data according to the odor (the tags).
 Also, the findParams argument should only get "true" or "false", and the data
 argument should be either "whole" or "missing".<br><br>
-If you'd like to run some of the models and function with different parameters,
+If you'd like to run part of the models and function with different parameters,
 you may run the other files directly with whatever parameters
 or whatever functions you'd like, as the code itself has a lot more option than can be 
 accessed through the runfile alone.
