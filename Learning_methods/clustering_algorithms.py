@@ -3,49 +3,64 @@ from sklearn.cluster import KMeans, DBSCAN, SpectralClustering
 from sklearn.mixture import GaussianMixture
 from sklearn.metrics import silhouette_score
 
-from Preprocess.preprocess_funcs import data_to_df, one_hot_enc
-from Plot.dim_reduction_plotting import PCA_and_plot
 
-
+"""
+Clustering using the KMenas algorithm.
+    X: The data to cluster.
+    n_clusters: the number of clusters.
+    can except other arguments.
+    :returns clustering labels.
+"""
 def using_spectral_cluster(X: pd.DataFrame, n_clusters=15, **kwargs) -> list:
     clustering = SpectralClustering(n_clusters=n_clusters, **kwargs).fit(X)
     return clustering.labels_
 
 
+"""
+Clustering using the KMenas algorithm.
+    X: The data to cluster.
+    n_clusters: the number of clusters.
+    can except other arguments.
+    :returns clustering labels.
+"""
 def using_Kmeans(X: pd.DataFrame, n_clusters=15, **kwargs) -> list:
     clustering = KMeans(n_clusters=n_clusters, **kwargs).fit(X)
     return clustering.labels_
 
 
+"""
+Clustering using the DBSCAN algorithm.
+    X: The data to cluster.
+    epsilon: the radius for core points.
+    can except other arguments.
+    :returns clustering labels.
+"""
 def using_dbscan(X: pd.DataFrame, eps=1.5) -> list:
     clustering = DBSCAN(eps=eps).fit(X)
     return clustering.labels_
 
+
+"""
+Clustering using the GMM algorithm.
+    X: The data to cluster.
+    n_clusters: the number of clusters.
+    tol: The convergence threshold.
+    can except other arguments.
+    :returns clustering labels.
+"""
 def using_GMM(X: pd.DataFrame, n_clusters=12, tol=0.001, **kwargs) -> list:
     clustering = GaussianMixture(n_components=n_clusters, tol=tol, **kwargs).fit(X)
     return clustering.predict(X)
 
-def sil_score(X: pd.DataFrame, labels:list):
+
+"""
+Computes the silhouette score.
+    X: the clustered data.
+    labels: the clustering labels
+"""
+def sil_score(X: pd.DataFrame, labels:list) -> float:
     return silhouette_score(X=X, labels=labels)
 
 
-if __name__ == "__main__":
-    odor_dict = {'a': 0, 'l': 1, 'c': 2, 'y': 3, 'f': 4, 'm': 5, 'n': 6, 'p': 7, 's': 8}
-    df = data_to_df("mushrooms_data.txt")
-    df = df.sample(frac=1.0)
-    tag = df["odor"]
-    df = df.drop(["odor"], axis=1)
-    tag = [odor_dict[x] for x in tag]
-    df = one_hot_enc(df)
-    tagSC = using_spectral_cluster(df, n_clusters=15)
-    #tagKM = using_Kmeans(df, n_clusters=15)
-    #tagDB = using_dbscan(df, eps=1.5)
-    #tagKM = using_GMM(df, n_clusters=12, tol=0.001)
-    print(sil_score(df, tagSC))
-    #PCA_and_plot(df, labels=tag, title="odor_based")
-    #PCA_and_plot(df, labels=tagSC, title="spectral_cluster")
-    #PCA_and_plot(df, labels=tagKM, title="KMeans")
-    #PCA_and_plot(df, labels=tagDB, title="DBSCAN", folder="plots")
-    #PCA_and_plot(df, labels=tagGMM, title="GMM", folder="plots")
 
 
